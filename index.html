@@ -32,11 +32,11 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h2>Generate Six Digit Codes</h2>
+                <h2>Warzone Pool Code Generator</h2>
                 
                 <div class="mb-3">
-                    <label for="codeInput" class="form-label">Enter pattern (X/_/space for blank):</label>
-                    <input type="text" class="form-control" id="codeInput" maxlength="6" placeholder="XXXXXX">
+                    <label for="codeInput" class="form-label">Enter pattern (<code>X</code>/<code>_</code>/<code>-</code>/<code>space</code> for blank):</label>
+                    <input type="text" class="form-control" id="codeInput" maxlength="6" placeholder="1X2X3X">
                 </div>
 
                 <div class="mb-3">
@@ -57,7 +57,7 @@
             const errorDiv = document.getElementById('errorMessage');
             
             // Validate input
-            if (!pattern.match(/^[Xx_ 123456789]{6}$/)) {
+            if (!pattern.match(/^[Xx_- 123456789]{6}$/)) {
                 errorDiv.style.display = 'block';
                 resultsDiv.innerHTML = '';
                 return;
@@ -129,7 +129,7 @@
         // Add input validation
         document.getElementById('codeInput').addEventListener('input', function(e) {
             const value = e.target.value.toUpperCase();
-            e.target.value = value.replace(/[^Xx_ 123456789]/g, '');
+            e.target.value = value.replace(/[^Xx-_ 123456789]/g, '');
             
             if (value.length > 6) {
                 e.target.value = value.substring(0, 6);
