@@ -129,7 +129,7 @@
             const fixedNumbers = {};
             
             for (let i = 0; i < pattern.length; i++) {
-                if (pattern[i].toUpperCase() === 'X' || pattern[i] === '_' || pattern[i] === ' ') {
+                if (pattern[i].toLowerCase() === 'x' || pattern[i] === '_' || pattern[i] === '-' || pattern[i] === ' ') {
                     xPositions.push(i);
                 } else {
                     fixedNumbers[i] = parseInt(pattern[i]);
@@ -189,7 +189,7 @@
 
         // Add input validation
         document.getElementById('codeInput').addEventListener('input', function(e) {
-            const value = e.target.value.toUpperCase();
+            const value = e.target.value;
             e.target.value = value.replace(/[^Xx-_ 123456789]/g, '');
             
             if (value.length > 6) {
