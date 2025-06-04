@@ -14,6 +14,13 @@
             padding: 5px;
             border-radius: 4px;
             background-color: #f8f9fa;
+            cursor: pointer;
+            user-select: none;
+        }
+        .result-item.invalid {
+            background-color: #e9ecef;
+            color: #6c757d;
+            text-decoration: line-through;
         }
         .error-message {
             color: red;
@@ -103,10 +110,20 @@
                 <h3>Found ${result.length} combinations:</h3>
                 <div class="list-group">
                     ${result.map(combo => `
-                        <div class="list-group-item result-item">${combo}</div>
+                        <div class="list-group-item result-item" onclick="markAsInvalid(this)">${combo}</div>
                     `).join('')}
                 </div>
             `;
+        }
+
+        function markAsInvalid(element) {
+            if (element.classList.contains('invalid')) {
+                element.classList.remove('invalid');
+                element.innerHTML = element.innerHTML.replace(' ❌', '');
+            } else {
+                element.classList.add('invalid');
+                element.innerHTML = element.innerHTML + ' ❌';
+            }
         }
 
         // Add input validation
