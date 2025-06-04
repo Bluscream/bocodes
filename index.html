@@ -139,8 +139,15 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="codeInput" class="form-label">Enter pattern (<code>X</code>/<code>x</code>/<code>_</code>/<code>-</code>/<code>space</code> for blank):</label>
-                    <input type="text" class="form-control" id="codeInput" maxlength="6" placeholder="1X2X3X">
+                    <label class="form-label">Enter pattern (empty field or X/x/_/-/space for blank):</label>
+                    <div class="d-flex gap-2">
+                        <input type="text" class="form-control text-center pattern-input" maxlength="1" pattern="[1-9Xx_- ]" data-index="0">
+                        <input type="text" class="form-control text-center pattern-input" maxlength="1" pattern="[1-9Xx_- ]" data-index="1">
+                        <input type="text" class="form-control text-center pattern-input" maxlength="1" pattern="[1-9Xx_- ]" data-index="2">
+                        <input type="text" class="form-control text-center pattern-input" maxlength="1" pattern="[1-9Xx_- ]" data-index="3">
+                        <input type="text" class="form-control text-center pattern-input" maxlength="1" pattern="[1-9Xx_- ]" data-index="4">
+                        <input type="text" class="form-control text-center pattern-input" maxlength="1" pattern="[1-9Xx_- ]" data-index="5">
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -190,6 +197,53 @@
             this.classList.toggle('collapsed');
         });
 
+        // Add input validation and auto-focus
+        document.querySelectorAll('.pattern-input').forEach(input => {
+            input.addEventListener('input', function(e) {
+                const value = e.target.value.toUpperCase();
+                e.target.value = value.replace(/[^Xx_- 123456789]/g, '');
+                
+                // Auto-focus next input if current is filled
+                if (value && this.dataset.index < 5) {
+                    const nextInput = document.querySelector(`.pattern-input[data-index="${parseInt(this.dataset.index) + 1}"]`);
+                    nextInput.focus();
+                    // Move cursor to end of next input
+                    nextInput.setSelectionRange(0, 0);
+                }
+            });
+
+            input.addEventListener('keydown', function(e) {
+                // Handle backspace
+                if (e.key === 'Backspace' && !this.value && this.dataset.index > 0) {
+                    const prevInput = document.querySelector(`.pattern-input[data-index="${parseInt(this.dataset.index) - 1}"]`);
+                    prevInput.focus();
+                    // Move cursor to end of previous input
+                    prevInput.setSelectionRange(0, 0);
+                }
+            });
+
+            // Handle paste event
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedData = (e.clipboardData || window.clipboardData).getData('text').slice(0, 6);
+                const inputs = document.querySelectorAll('.pattern-input');
+                
+                pastedData.split('').forEach((char, index) => {
+                    if (index < inputs.length) {
+                        inputs[index].value = char.toUpperCase().replace(/[^Xx_- 123456789]/g, '');
+                    }
+                });
+
+                // Focus the next empty input or the last input
+                const nextEmptyIndex = Array.from(inputs).findIndex(input => !input.value);
+                if (nextEmptyIndex !== -1) {
+                    inputs[nextEmptyIndex].focus();
+                } else {
+                    inputs[inputs.length - 1].focus();
+                }
+            });
+        });
+
         // Handle URL parameters
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -202,19 +256,24 @@
         window.addEventListener('load', function() {
             const patternParam = getUrlParameter('pattern');
             if (patternParam) {
-                const codeInput = document.getElementById('codeInput');
-                codeInput.value = patternParam;
+                const inputs = document.querySelectorAll('.pattern-input');
+                patternParam.split('').forEach((char, index) => {
+                    if (index < inputs.length) {
+                        inputs[index].value = char;
+                    }
+                });
                 generateCombinations();
             }
         });
 
         function generateCombinations() {
-            const pattern = document.getElementById('codeInput').value.toUpperCase();
+            const inputs = document.querySelectorAll('.pattern-input');
+            const pattern = Array.from(inputs).map(input => input.value || 'X').join('');
             const resultsDiv = document.getElementById('results');
             const errorDiv = document.getElementById('errorMessage');
             
             // Validate input
-            if (!pattern.match(/^[Xx_ 123456789-]{6}$/)) {
+            if (!pattern.match(/^[Xx_- 123456789]{6}$/)) {
                 errorDiv.style.display = 'block';
                 resultsDiv.innerHTML = '';
                 return;
@@ -280,16 +339,6 @@
                 element.classList.add('invalid');
             }
         }
-
-        // Add input validation
-        document.getElementById('codeInput').addEventListener('input', function(e) {
-            const value = e.target.value;
-            e.target.value = value.replace(/[^Xx_ 123456789-]/g, '');
-            
-            if (value.length > 6) {
-                e.target.value = value.substring(0, 6);
-            }
-        });
     </script>
 </body>
 </html>
