@@ -112,6 +112,24 @@
             themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
         }
 
+        // Handle URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Check for pattern parameter and generate if present
+        window.addEventListener('load', function() {
+            const patternParam = getUrlParameter('pattern');
+            if (patternParam) {
+                const codeInput = document.getElementById('codeInput');
+                codeInput.value = patternParam;
+                generateCombinations();
+            }
+        });
+
         function generateCombinations() {
             const pattern = document.getElementById('codeInput').value.toUpperCase();
             const resultsDiv = document.getElementById('results');
