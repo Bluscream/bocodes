@@ -20,7 +20,9 @@
         .result-item.invalid {
             background-color: var(--bs-gray-200);
             color: var(--bs-gray-600);
-            /* text-decoration: line-through; */
+        }
+        .result-item.invalid.strike {
+            text-decoration: line-through;
         }
         .result-item.invalid::after {
             content: " ❌";
@@ -201,10 +203,8 @@
         function markAsInvalid(element) {
             if (element.classList.contains('invalid')) {
                 element.classList.remove('invalid');
-                // element.innerHTML = element.innerHTML.replace(' ❌', '');
             } else {
                 element.classList.add('invalid');
-                // element.innerHTML = element.innerHTML + ' ❌';
             }
         }
 
