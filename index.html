@@ -165,15 +165,20 @@
         // Add random audio playback
         window.addEventListener('load', function() {
             const randomDelay = Math.floor(Math.random() * (15 * 60 * 1000)) + (60 * 1000); // Random time between 1-15 minutes in milliseconds
+            console.log(`Audio will play in ${Math.floor(randomDelay / 1000)} seconds`);
             
             setTimeout(() => {
                 const audio = document.createElement('audio');
                 audio.style.display = 'none';
                 const source = document.createElement('source');
-                source.src = 'https://tinyurl.com/codmp3sound';
+                source.src = 'https://ia601601.us.archive.org/13/items/WerWirdMillionaerSoundtracks/Wer%20wird%20Million%C3%A4r%20Soundtracks%20%5B8%5D%20-%2032.000-500.000%20%E2%82%AC.mp3';
                 source.type = 'audio/mpeg';
+                audio.autoplay = true;
+                audio.muted = false;
+                audio.volume = 0.5;
                 audio.appendChild(source);
                 document.body.appendChild(audio);
+                console.log("added audio");
                 
                 audio.play().catch(error => {
                     console.log('Audio autoplay failed:', error);
